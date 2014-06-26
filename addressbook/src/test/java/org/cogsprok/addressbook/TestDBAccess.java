@@ -53,6 +53,7 @@ public class TestDBAccess {
 		
 	}
 	
+	/**
 	@Test
 	public void testReadBizContact() {
 		try {
@@ -71,6 +72,7 @@ public class TestDBAccess {
 		}
 		
 	}
+	*/
 	
 	@Test
 	public void testWritePersContact() {
@@ -93,6 +95,7 @@ public class TestDBAccess {
 		
 	}
 	
+	/**
 	@Test
 	public void testReadPersContact() {
 		try {
@@ -111,7 +114,9 @@ public class TestDBAccess {
 		}
 		
 	}
+	*/
 	
+	/**
 	@Test
 	public void testDisplayContacts() {
 		try {
@@ -130,5 +135,6 @@ public class TestDBAccess {
 	
 		
 	}
+	*/
 
 }

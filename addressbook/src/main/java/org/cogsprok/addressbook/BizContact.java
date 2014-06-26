@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.cogsprok.addressbook;
 
-import java.util.Map.Entry;
-
+import java.util.HashMap;
 import javax.swing.*;
 
 /**
@@ -17,7 +13,7 @@ public class BizContact extends Contact {
 	
 	public BizContact() {
 		this.setType("Business");
-	}
+	} 
     private String jobTitle;
     private String org;
     
@@ -58,9 +54,9 @@ public class BizContact extends Contact {
     
     //Overrides superclass method to display contact details with biz info
     @Override
-    public void displayContact() {
-        super.displayContact();
-        ContactList.panel2.add(new JLabel(jobTitle + " at " + org + "  "));
+    public void displayContact(HashMap<String, String> conDetail) {
+        super.displayContact(conDetail);
+        ContactList.panel2.add(new JLabel(conDetail.get("title") + " at " + conDetail.get("org") + "  "));
         ContactList.panel2.revalidate();
         ContactList.panel2.repaint();
     }

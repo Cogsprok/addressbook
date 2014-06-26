@@ -3,9 +3,6 @@ package org.cogsprok.addressbook;
 
 import java.awt.Component;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.swing.*;
 
 /**
@@ -14,6 +11,7 @@ import javax.swing.*;
  */
 abstract class Contact {
 	private HashMap<String, String> fieldMap = new HashMap<>();
+	private HashMap<String, String> conMap = new HashMap<>();
     private String firstName;
     private String lastName;
     private String address;
@@ -69,6 +67,11 @@ abstract class Contact {
     	return fieldMap;
     }
     
+    public String getConMapEntry(String s) {
+    	return conMap.get(s);
+    	
+    }
+    
     //Takes text from JText fields for Add Contact, sets variables
     public void dataCollector() {
     	for(Component c : ContactList.panel2.getComponents()) {
@@ -87,14 +90,14 @@ abstract class Contact {
     }
     
     //Repaints panel2 with contact details
-    public void displayContact() {
+    public void displayContact(HashMap<String, String> conDetail) {
             ContactList.panel2.removeAll();
             ContactList.panel2.add(new JLabel(type + " Contact:"));
             ContactList.panel2.add(Box.createVerticalStrut(5));
-            ContactList.panel2.add(new JLabel(firstName + " " + lastName + "  "));
-            ContactList.panel2.add(new JLabel(address + "  "));
-            ContactList.panel2.add(new JLabel("Phone:" + phone + "  E-mail: " 
-                    + email + "  "));
+            ContactList.panel2.add(new JLabel(conDetail.get("fname") + " " + conDetail.get("lname") + "  "));
+            ContactList.panel2.add(new JLabel(conDetail.get("address") + "  "));
+            ContactList.panel2.add(new JLabel("Phone:" + conDetail.get("phone") + "  E-mail: " 
+                    + conDetail.get("email") + "  "));
             ContactList.panel2.revalidate();
             ContactList.panel2.repaint();
     }   

@@ -4,6 +4,8 @@
  */
 package org.cogsprok.addressbook;
 
+import java.util.HashMap;
+
 import javax.swing.JLabel;
 
 /**
@@ -44,9 +46,9 @@ public class PersContact extends Contact {
     
     //Overrides superclass method to display DOB with contact details
     @Override
-    public void displayContact() {
-        super.displayContact();
-        ContactList.panel2.add(new JLabel("Birthday: " + dob));
+    public void displayContact(HashMap<String, String> conDetail) {
+        super.displayContact(conDetail);
+        ContactList.panel2.add(new JLabel("Birthday: " + conDetail.get("birth")));
         ContactList.panel2.revalidate();
         ContactList.panel2.repaint();   
     }

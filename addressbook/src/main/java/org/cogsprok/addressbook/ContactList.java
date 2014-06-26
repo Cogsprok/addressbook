@@ -5,13 +5,13 @@ package org.cogsprok.addressbook;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 import javax.swing.*;
+import java.sql.ResultSet;
 
 
 /**
@@ -20,7 +20,9 @@ import javax.swing.*;
  */
 public class ContactList {
     // Collection of client ID key and Contact object value pairs
-    HashMap<Integer, Contact> contacts = new HashMap<Integer, Contact>();
+    HashMap<Integer, Integer> contacts = new HashMap<>();
+    HashMap<Integer, String> typeMap = new HashMap<>();
+    private ResultSet cList;
     
     JFrame main;
     //Declared static to allow access from Contact class methods
@@ -43,11 +45,31 @@ public class ContactList {
     }
     //Iterates through HashMap, getting Contacts and displaying first + last name
     private void displayContacts() {
-        for(int i = 1; i <= contacts.size(); i++) {
-            Contact c = (Contact) contacts.get(i);
-            panel2.add(new JLabel(c.getContactId() + "    " + c.getFirstName() 
-            + " " + c.getLastName() + "    (" + c.getType().substring(0, 1) + ")"));  
-        }
+    	DBAccess dba = new DBAccess();
+    	try {
+    	  dba.dbConnect();
+    	  cList = dba.listContacts();
+        //for(int i = 1; i <= contacts.size(); i++) {
+            //Contact c = (Contact) contacts.get(i);
+    	  int i = 1;
+    	  while(cList.next()) {
+    		  contacts.put(i, cList.getInt("ID"));
+    		  typeMap.put(i, cList.getString("TYPE"));
+    		  panel2.add(new JLabel(i + "    " + cList.getString("LNAME") 
+    		            + ", " + cList.getString("FNAME") + "    (" + cList.getString("TYPE") + ")"));
+    		  i++;
+    		  
+    		  
+    	  }
+    	} catch (Exception e) {
+    		  System.out.println("CL.DisCon: " + e.getMessage());
+    	}
+    	dba.remoteClose();
+    		  
+    	  
+           // panel2.add(new JLabel(c.getContactId() + "    " + c.getFirstName() 
+           // + " " + c.getLastName() + "    (" + c.getType().substring(0, 1) + ")"));  
+        //}
     }
     
     //Main Window and Menu Layout
@@ -86,10 +108,30 @@ public class ContactList {
     //Listens for button click to display a contacts info
     class DisListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+        	DBAccess dba = new DBAccess();
+        	try {
+        		dba.dbConnect();
+        	}catch(Exception ex) {
+        		System.out.println("Connect EX: " + ex.getMessage());
+        	}
             String c = cid.getText();
             int cnum = Integer.parseInt(c);
-            Contact disCont = contacts.get(cnum);
-            disCont.displayContact();
+            try {
+            	System.out.println(typeMap.get(cnum));
+            	if(typeMap.get(cnum).equals("B")) {
+            		BizContact disCont = new BizContact();
+            		disCont.displayContact(dba.readBizContact(contacts.get(cnum)));
+            	} else if(typeMap.get(cnum).equals("P")) {
+            		PersContact disCont = new PersContact();
+            		disCont.displayContact(dba.readPersContact(contacts.get(cnum)));
+            	} else {
+            		System.out.println("CL.DisListener: Something went awry, contact is neither B nor P");
+            	}
+            } catch (Exception exc) {
+            	System.out.println("CL.DisList Read EX: " + exc.getMessage());
+            }
+            //Contact disCont = contacts.get(cnum);
+            //disCont.displayContact();
             cid.setText("");
         }
     }
@@ -98,10 +140,27 @@ public class ContactList {
     //Listens for return/enter key to display a contact's info
     class CidListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+        	DBAccess dba = new DBAccess();
+        	try {
+        		dba.dbConnect();
+        	}catch(Exception ex) {
+        		System.out.println("Connect EX: " + ex.getMessage());
+        	}
             String c = cid.getText();
             int cnum = Integer.parseInt(c);
-            Contact disCont = contacts.get(cnum);
-            disCont.displayContact();
+            try {
+            	if(typeMap.get(c) == "B") {
+            		BizContact disCont = new BizContact();
+            		disCont.displayContact(dba.readBizContact(contacts.get(cnum)));
+            	} else if(typeMap.get(c) == "P") {
+            		PersContact disCont = new PersContact();
+            		disCont.displayContact(dba.readPersContact(contacts.get(cnum)));
+            	} else {
+            		System.out.println("Something went awry, contact is neither B nor P");
+            	}
+            } catch (Exception exc) {
+            	System.out.println("Read EX: " + exc.getMessage());
+            }
             cid.setText("");
         }
     }
@@ -257,7 +316,8 @@ public class ContactList {
             panel3.setLayout(new FlowLayout());
             panel2.add(panel3);
             cid = new JTextField(5);
-            cid.addActionListener(new CidListener());
+            //cid.addActionListener(new CidListener());
+            cid.addActionListener(new DisListener());
             JButton display = new JButton("Display");
             display.addActionListener(new DisListener());
             panel3.add(new JLabel("Enter ID for full Contact Info"));
