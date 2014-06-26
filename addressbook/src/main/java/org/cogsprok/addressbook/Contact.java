@@ -1,6 +1,11 @@
 
 package org.cogsprok.addressbook;
 
+import java.awt.Component;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.swing.*;
 
 /**
@@ -8,6 +13,7 @@ import javax.swing.*;
  * @author John Wilson
  */
 abstract class Contact {
+	private HashMap<String, String> fieldMap = new HashMap<>();
     private String firstName;
     private String lastName;
     private String address;
@@ -59,13 +65,24 @@ abstract class Contact {
         return type;
     }
     
+    public HashMap<String, String> getFieldMap() {
+    	return fieldMap;
+    }
+    
     //Takes text from JText fields for Add Contact, sets variables
     public void dataCollector() {
-        this.setFirstName(ContactList.fName.getText());
-        this.setLastName(ContactList.lName.getText());
-        this.setAddress(ContactList.address.getText());
-        this.setPhone(ContactList.phone.getText());
-        this.setEmail(ContactList.email.getText());
+    	for(Component c : ContactList.panel2.getComponents()) {
+    		if(c instanceof JTextField) {
+    			fieldMap.put(c.getName(), ((JTextField) c).getText());
+    		}
+    	}
+    	
+    	
+        //this.setFirstName(fields.get("fName"));
+        //this.setLastName(fields.get("lName"));
+        //this.setAddress(fields.get("address"));
+        //this.setPhone(fields.get("phone"));
+        //this.setEmail(fields.get("email"));
        
     }
     
@@ -80,7 +97,5 @@ abstract class Contact {
                     + email + "  "));
             ContactList.panel2.revalidate();
             ContactList.panel2.repaint();
-    }
-            
-    
+    }   
 }

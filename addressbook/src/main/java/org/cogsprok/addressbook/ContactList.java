@@ -5,10 +5,12 @@ package org.cogsprok.addressbook;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+
 import javax.swing.*;
 
 
@@ -80,7 +82,7 @@ public class ContactList {
     main.setVisible(true); 
     }
 
-    
+    //List Screen
     //Listens for button click to display a contacts info
     class DisListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -91,6 +93,8 @@ public class ContactList {
             cid.setText("");
         }
     }
+    
+    //List Screen
     //Listens for return/enter key to display a contact's info
     class CidListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -102,6 +106,7 @@ public class ContactList {
         }
     }
     
+    //Add Biz Screen
     /* Save button on Add New Business Contact form
     *  Creates new BizContact object, creates ContactId/Key
     *  calls dataCollector() to set variables
@@ -111,10 +116,11 @@ public class ContactList {
     class BizSaveListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             BizContact contact = new BizContact();
-            contact.setContactId(contacts.size() + 1);
-            contact.setType("Business");
+            //contact.setContactId(contacts.size() + 1);
+            //contact.setType("Business");
             contact.dataCollector();
-            contacts.put((contacts.size() +1), contact);
+            //contacts.put((contacts.size() +1), contact);
+            contact.addContact();
             fName.setText("");
             lName.setText("");
             address.setText("");
@@ -125,6 +131,7 @@ public class ContactList {
         }
     }
     
+    //Add Pers Screen
     /* Save Button on Add New Personal Contact form
     *  Creates new PersContact object, sets ContactId/Key 
     *  calls dataCollector() to set variables
@@ -134,10 +141,11 @@ public class ContactList {
     class PersSaveListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             PersContact contact = new PersContact();
-            contact.setContactId(contacts.size() + 1);
-            contact.setType("Personal");
+            //contact.setContactId(contacts.size() + 1);
+            //contact.setType("Personal");
             contact.dataCollector();
-            contacts.put((contacts.size() +1), contact);
+            contact.addContact();
+            //contacts.put((contacts.size() +1), contact);
             fName.setText("");
             lName.setText("");
             address.setText("");
@@ -149,6 +157,7 @@ public class ContactList {
         }
     }
     
+    //Main Screen
     //Add New Business Contact Button
     class BizListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -157,24 +166,31 @@ public class ContactList {
             panel2.add(Box.createVerticalStrut(5));
             panel2.add(new JLabel("First Name:"));
             fName = new JTextField(35);
+            fName.setName("fName");
             panel2.add(fName);
             panel2.add(new JLabel("Last Name:"));
             lName = new JTextField(35);
+            lName.setName("lName");
             panel2.add(lName);
             panel2.add(new JLabel("Address:"));
             address = new JTextField(35);
+            address.setName("address");
             panel2.add(address);
             panel2.add(new JLabel("Phone:"));
             phone = new JTextField(35);
+            phone.setName("phone");
             panel2.add(phone);
             panel2.add(new JLabel("E-mail:"));
             email = new JTextField(35);
+            email.setName("email");
             panel2.add(email);
             panel2.add(new JLabel("Job Title:"));
             title = new JTextField(35);
+            title.setName("title");
             panel2.add(title);
             panel2.add(new JLabel("Organization:"));
             org = new JTextField(35);
+            org.setName("org");
             panel2.add(org);
             panel2.add(Box.createVerticalStrut(5));
             JButton save = new JButton("Save");
@@ -189,6 +205,7 @@ public class ContactList {
         }
     }
     
+    //Main Screen
     //Add New Personal Contact Button
     class PersListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -197,21 +214,27 @@ public class ContactList {
             panel2.add(Box.createVerticalStrut(5));
             panel2.add(new JLabel("First Name:"));
             fName = new JTextField(35);
+            fName.setName("fName");
             panel2.add(fName);
             panel2.add(new JLabel("Last Name:"));
             lName = new JTextField(35);
+            lName.setName("lName");
             panel2.add(lName);
             panel2.add(new JLabel("Address:"));
             address = new JTextField(35);
+            address.setName("address");
             panel2.add(address);
             panel2.add(new JLabel("Phone:"));
             phone = new JTextField(35);
+            phone.setName("phone");
             panel2.add(phone);
             panel2.add(new JLabel("E-mail:"));
             email = new JTextField(35);
+            email.setName("email");
             panel2.add(email);
-            panel2.add(new JLabel("Date of Birth:"));
+            panel2.add(new JLabel("Date of Birth: (YYYY-MM-DD)"));
             birth = new JTextField(35);
+            birth.setName("birth");
             panel2.add(birth);
             panel2.add(Box.createVerticalStrut(5));
             JButton save = new JButton("Save");
@@ -221,7 +244,8 @@ public class ContactList {
             panel2.repaint();
         }
     }
-
+    
+    //Main Screen
     // Display Contacts Button Listener
     class DisplayListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -244,13 +268,16 @@ public class ContactList {
             panel2.repaint(); 
         }
     }
-
+    //Main Screen
     //Quit Button Listener
     class QuitListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
          main.dispose();
         }
     }
+    
+    
+    
 }
     
 

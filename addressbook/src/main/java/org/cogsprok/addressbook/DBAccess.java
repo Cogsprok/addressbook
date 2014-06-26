@@ -6,10 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class DBAccess {
+	
 	
 	
 	
@@ -34,21 +36,22 @@ public class DBAccess {
 		
 	}
 
-	public void addBizContact(String[] contact) throws Exception {
+	public void addBizContact(HashMap<String,String> contact) throws Exception {
 		
 		try {
 			connect = DriverManager
 					.getConnection("jdbc:mysql://localhost/addressbook?"
 							+ "user=adbook&password=adbook");
 		preparedStatement = connect
-				.prepareStatement("insert into addressbook.BIZCONTACTS values (default, ?, ?, ?, ?, ?, ?, ?)");
-		preparedStatement.setString(1, contact[0]);
-		preparedStatement.setString(2, contact[1]);
-		preparedStatement.setString(3, contact[2]);
-		preparedStatement.setString(4, contact[3]);
-		preparedStatement.setString(5, contact[4]);
-		preparedStatement.setString(6, contact[5]);
-		preparedStatement.setString(7, contact[6]);
+				.prepareStatement("insert into addressbook.CONTACTS values (default, ?, ?, ?, ?, ?, NULL, ?, ?, ?)");
+		preparedStatement.setString(1, contact.get("fName"));
+		preparedStatement.setString(2, contact.get("lName"));
+		preparedStatement.setString(3, contact.get("address"));
+		preparedStatement.setString(4, contact.get("phone"));
+		preparedStatement.setString(5, contact.get("email"));
+		preparedStatement.setString(6, contact.get("title"));
+		preparedStatement.setString(7, contact.get("org"));
+		preparedStatement.setString(8, "B");
 		preparedStatement.executeUpdate();
 		
 		} catch (SQLException e) {
@@ -64,7 +67,7 @@ public class DBAccess {
 				.getConnection("jdbc:mysql://localhost/addressbook?"
 						+ "user=adbook&password=adbook");
 		preparedStatement = connect
-				.prepareStatement("SELECT FNAME, LNAME, ADDRESS, PHONE, EMAIL, TITLE, ORG FROM addressbook.BIZCONTACTS");
+				.prepareStatement("SELECT FNAME, LNAME, ADDRESS, PHONE, EMAIL, TITLE, ORG FROM addressbook.CONTACTS WHERE TYPE = 'B'");
 		resultSet = preparedStatement.executeQuery();
 		HashMap<String, String> contact = writeResults(resultSet);
 		close(connect);
@@ -98,24 +101,25 @@ public class DBAccess {
 				c.close();
 			}
 		} catch (Exception e) {
-			// don't throw now as it might leave following closables in undefined state
+			// don't throw now as it might leave following closeables in undefined state
 		}
 		
 	}
 
-	public void addPersContact(String[] contact) throws Exception {
+	public void addPersContact(HashMap<String, String> contact) throws Exception {
 		try {
 			connect = DriverManager
 					.getConnection("jdbc:mysql://localhost/addressbook?"
 							+ "user=adbook&password=adbook");
 		preparedStatement = connect
-				.prepareStatement("insert into addressbook.PERSCONTACTS values (default, ?, ?, ?, ?, ?, ?)");
-		preparedStatement.setString(1, contact[0]);
-		preparedStatement.setString(2, contact[1]);
-		preparedStatement.setString(3, contact[2]);
-		preparedStatement.setString(4, contact[3]);
-		preparedStatement.setString(5, contact[4]);
-		preparedStatement.setString(6, contact[5]);
+				.prepareStatement("insert into addressbook.CONTACTS values (default, ?, ?, ?, ?, ?, ?, NULL, NULL, ?)");
+		preparedStatement.setString(1, contact.get("fName"));
+		preparedStatement.setString(2, contact.get("lName"));
+		preparedStatement.setString(3, contact.get("address"));
+		preparedStatement.setString(4, contact.get("phone"));
+		preparedStatement.setString(5, contact.get("email"));
+		preparedStatement.setString(6, contact.get("birth"));
+		preparedStatement.setString(7, "P");
 		preparedStatement.executeUpdate();
 		
 		} catch (SQLException e) {
@@ -131,7 +135,7 @@ public class DBAccess {
 				.getConnection("jdbc:mysql://localhost/addressbook?"
 						+ "user=adbook&password=adbook");
 		preparedStatement = connect
-				.prepareStatement("SELECT FNAME, LNAME, ADDRESS, PHONE, EMAIL, DOB FROM addressbook.PERSCONTACTS");
+				.prepareStatement("SELECT FNAME, LNAME, ADDRESS, PHONE, EMAIL, DOB FROM addressbook.CONTACTS WHERE TYPE = 'P'");
 		resultSet = preparedStatement.executeQuery();
 		HashMap<String, String> contact = writeResults(resultSet);
 		close(connect);
@@ -144,13 +148,13 @@ public class DBAccess {
 				.getConnection("jdbc:mysql://localhost/addressbook?"
 						+ "user=adbook&password=adbook");
 		preparedStatement = connect
-				.prepareStatement("SELECT LNAME, FNAME FROM addressbook.BIZCONTACTS"); 
+				.prepareStatement("SELECT LNAME, FNAME FROM addressbook.CONTACTS"); 
 		resultSet = preparedStatement.executeQuery();
 		mapNames(resultSet);
-		preparedStatement = connect
-				.prepareStatement("SELECT LNAME, FNAME FROM addressbook.PERSCONTACTS;");
-		resultSet = preparedStatement.executeQuery();
-		mapNames(resultSet);
+		//preparedStatement = connect
+		//		.prepareStatement("SELECT LNAME, FNAME FROM addressbook.PERSCONTACTS;");
+		//resultSet = preparedStatement.executeQuery();
+		//mapNames(resultSet);
 	
 		close(connect);
 		return conNames;

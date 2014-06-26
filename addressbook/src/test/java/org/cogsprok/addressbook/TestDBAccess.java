@@ -10,7 +10,10 @@ import org.junit.Test;
 
 public class TestDBAccess {
 	
+
 	private DBAccess dba = new DBAccess();
+	
+
 
 	@Test
 	public void connectToDB() {
@@ -30,12 +33,19 @@ public class TestDBAccess {
 	@Test
 	public void testWriteBizContact() {
 		boolean noException = false;
-		String[] contact = {"jTestFN", "jTestLN", "jTestAdd", "jTestPhone", "jTestEm", "jTestTitle", "jTestOrg" };
+		HashMap<String, String> contact = new HashMap<>();
+		contact.put("fname", "bTestFN");
+		contact.put("lname", "bTestLN");
+		contact.put("address",  "bTestAdd");
+		contact.put("phone", "bTestPhone");
+		contact.put("email", "bTestEm");
+		contact.put("title", "bTestTitle");
+		contact.put("org", "bTestOrg");
 		try {
 			dba.addBizContact(contact);
 			noException = true;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Write Biz: " + e.getMessage());
 			noException = false;
 		}
 		assertTrue(noException);
@@ -47,15 +57,15 @@ public class TestDBAccess {
 	public void testReadBizContact() {
 		try {
 		HashMap<String, String> biz = dba.readBizContact();
-		assertEquals("jTestFN", biz.get("fname"));
-		assertEquals("jTestLN", biz.get("lname"));
-		assertEquals("jTestAdd", biz.get("address"));
+		assertEquals("bTestFN", biz.get("fname"));
+		assertEquals("bTestLN", biz.get("lname"));
+		assertEquals("bTestAdd", biz.get("address"));
 		for(Entry<String, String> entry : biz.entrySet()) {
 			System.out.println(entry.getKey() + " " + entry.getValue());
 		}
 		
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Read Biz: " + e.getMessage());
 			fail("Exception was thrown");
 			
 		}
@@ -65,12 +75,18 @@ public class TestDBAccess {
 	@Test
 	public void testWritePersContact() {
 		boolean noException = false;
-		String[] contact = {"pTestFN", "pTestLN", "pTestAdd", "pTestPhone", "pTestEm", "1976-06-03" };
+		HashMap<String, String> contact = new HashMap<>();
+		contact.put("fname", "pTestFN");
+		contact.put("lname", "pTestLN");
+		contact.put("address",  "pTestAdd");
+		contact.put("phone", "pTestPhone");
+		contact.put("email", "pTestEm");
+		contact.put("dob", "1976-03-04");
 		try {
 			dba.addPersContact(contact);
 			noException = true;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Write Pers: " + e.getMessage());
 			noException = false;
 		}
 		assertTrue(noException);
@@ -89,7 +105,7 @@ public class TestDBAccess {
 		}
 		
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Read Pers: " + e.getMessage());
 			fail("Exception was thrown");
 			
 		}
@@ -103,11 +119,11 @@ public class TestDBAccess {
 			for(Entry<String, String> entry : cons.entrySet()) {
 				System.out.println(entry.getKey() + ", " + entry.getValue());
 			} 
-			assertEquals("jTestFN", cons.get("jTestLN"));
+			assertEquals("bTestFN", cons.get("bTestLN"));
 			assertEquals("pTestFN", cons.get("pTestLN"));
 		
 		}catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Display: " + e.getMessage());
 			fail("Exception was thrown in DisplayContacts");
 		}
 		

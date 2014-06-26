@@ -4,6 +4,8 @@
  */
 package org.cogsprok.addressbook;
 
+import java.util.Map.Entry;
+
 import javax.swing.*;
 
 /**
@@ -12,8 +14,15 @@ import javax.swing.*;
  * Contact subclass adds Business specific attributes
  */
 public class BizContact extends Contact {
+	
+	public BizContact() {
+		this.setType("Business");
+	}
     private String jobTitle;
     private String org;
+    
+    
+   
     
     
     public void setJobTitle(String title) {
@@ -33,8 +42,18 @@ public class BizContact extends Contact {
     @Override
     public void dataCollector() {
         super.dataCollector();
-        this.setJobTitle(ContactList.title.getText());
-        this.setOrg(ContactList.org.getText());
+        //this.setJobTitle(fieldMap.get("title"));
+        //this.setOrg(fieldMap.get("org"));
+    }
+    
+    public void addContact()  {
+    	try {
+    		DBAccess dba = new DBAccess();
+    		dba.dbConnect();
+    		dba.addBizContact(this.getFieldMap());
+    	} catch (Exception e) {
+    		System.out.println("BaddCont: " + e.getMessage());
+    	}
     }
     
     //Overrides superclass method to display contact details with biz info

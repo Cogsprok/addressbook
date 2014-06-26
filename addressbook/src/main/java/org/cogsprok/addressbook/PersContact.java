@@ -11,6 +11,10 @@ import javax.swing.JLabel;
  * @author John Wilson
  */
 public class PersContact extends Contact {
+	public PersContact() {
+		this.setType("Personal");
+	}
+	
     private String dob;
         
     public void setDob(String bday) {
@@ -24,7 +28,18 @@ public class PersContact extends Contact {
     @Override
     public void dataCollector() {
         super.dataCollector();
-        this.setDob(ContactList.birth.getText());
+        //this.setDob(Contact.fieldMap.get("birth"));
+        
+    }
+    
+    public void addContact()  {
+    	try {
+    		DBAccess dba = new DBAccess();
+    		dba.dbConnect();
+    		dba.addPersContact(this.getFieldMap());
+    	} catch (Exception e) {
+    		System.out.println("PaddCont: " + e.getMessage());
+    	}
     }
     
     //Overrides superclass method to display DOB with contact details
