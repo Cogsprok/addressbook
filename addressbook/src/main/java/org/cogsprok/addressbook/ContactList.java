@@ -1,17 +1,15 @@
 
 package org.cogsprok.addressbook;
 
-
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-
 import javax.swing.*;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 /**
@@ -25,8 +23,6 @@ public class ContactList {
     private ResultSet cList;
     
     JFrame main;
-    //Declared static to allow access from Contact class methods
-    //There is probably a better/safer way to pass between classes
     static JPanel panel2;
     static JTextField fName;
     static JTextField lName;
@@ -37,40 +33,6 @@ public class ContactList {
     static JTextField org;
     static JTextField birth;
     static JTextField cid;
-    
-    
-    //public method to access getText of local fields
-    public String getInfo(JTextField field) {
-    	return field.getText();
-    }
-    //Iterates through HashMap, getting Contacts and displaying first + last name
-    private void displayContacts() {
-    	DBAccess dba = new DBAccess();
-    	try {
-    	  dba.dbConnect();
-    	  cList = dba.listContacts();
-        //for(int i = 1; i <= contacts.size(); i++) {
-            //Contact c = (Contact) contacts.get(i);
-    	  int i = 1;
-    	  while(cList.next()) {
-    		  contacts.put(i, cList.getInt("ID"));
-    		  typeMap.put(i, cList.getString("TYPE"));
-    		  panel2.add(new JLabel(i + "    " + cList.getString("LNAME") 
-    		            + ", " + cList.getString("FNAME") + "    (" + cList.getString("TYPE") + ")"));
-    		  i++;
-    		  
-    		  
-    	  }
-    	} catch (Exception e) {
-    		  System.out.println("CL.DisCon: " + e.getMessage());
-    	}
-    	dba.remoteClose();
-    		  
-    	  
-           // panel2.add(new JLabel(c.getContactId() + "    " + c.getFirstName() 
-           // + " " + c.getLastName() + "    (" + c.getType().substring(0, 1) + ")"));  
-        //}
-    }
     
     //Main Window and Menu Layout
     public void menuScreen() {
@@ -103,120 +65,7 @@ public class ContactList {
     main.setSize(600, 400);
     main.setVisible(true); 
     }
-
-    //List Screen
-    //Listens for button click to display a contacts info
-    class DisListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-        	DBAccess dba = new DBAccess();
-        	try {
-        		dba.dbConnect();
-        	}catch(Exception ex) {
-        		System.out.println("Connect EX: " + ex.getMessage());
-        	}
-            String c = cid.getText();
-            int cnum = Integer.parseInt(c);
-            try {
-            	System.out.println(typeMap.get(cnum));
-            	if(typeMap.get(cnum).equals("B")) {
-            		BizContact disCont = new BizContact();
-            		disCont.displayContact(dba.readBizContact(contacts.get(cnum)));
-            	} else if(typeMap.get(cnum).equals("P")) {
-            		PersContact disCont = new PersContact();
-            		disCont.displayContact(dba.readPersContact(contacts.get(cnum)));
-            	} else {
-            		System.out.println("CL.DisListener: Something went awry, contact is neither B nor P");
-            	}
-            } catch (Exception exc) {
-            	System.out.println("CL.DisList Read EX: " + exc.getMessage());
-            }
-            //Contact disCont = contacts.get(cnum);
-            //disCont.displayContact();
-            cid.setText("");
-        }
-    }
     
-    //List Screen
-    //Listens for return/enter key to display a contact's info
-    class CidListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-        	DBAccess dba = new DBAccess();
-        	try {
-        		dba.dbConnect();
-        	}catch(Exception ex) {
-        		System.out.println("Connect EX: " + ex.getMessage());
-        	}
-            String c = cid.getText();
-            int cnum = Integer.parseInt(c);
-            try {
-            	if(typeMap.get(c) == "B") {
-            		BizContact disCont = new BizContact();
-            		disCont.displayContact(dba.readBizContact(contacts.get(cnum)));
-            	} else if(typeMap.get(c) == "P") {
-            		PersContact disCont = new PersContact();
-            		disCont.displayContact(dba.readPersContact(contacts.get(cnum)));
-            	} else {
-            		System.out.println("Something went awry, contact is neither B nor P");
-            	}
-            } catch (Exception exc) {
-            	System.out.println("Read EX: " + exc.getMessage());
-            }
-            cid.setText("");
-        }
-    }
-    
-    //Add Biz Screen
-    /* Save button on Add New Business Contact form
-    *  Creates new BizContact object, creates ContactId/Key
-    *  calls dataCollector() to set variables
-    *  Adds completed BizContact object to HashMap
-    *  Clears fields for next entry
-    */
-    class BizSaveListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            BizContact contact = new BizContact();
-            //contact.setContactId(contacts.size() + 1);
-            //contact.setType("Business");
-            contact.dataCollector();
-            //contacts.put((contacts.size() +1), contact);
-            contact.addContact();
-            fName.setText("");
-            lName.setText("");
-            address.setText("");
-            phone.setText("");
-            email.setText("");
-            title.setText("");
-            org.setText("");
-        }
-    }
-    
-    //Add Pers Screen
-    /* Save Button on Add New Personal Contact form
-    *  Creates new PersContact object, sets ContactId/Key 
-    *  calls dataCollector() to set variables
-    *  Adds completed PersContact object to HashMap 
-    *  Clears fields for next entry
-    */
-    class PersSaveListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            PersContact contact = new PersContact();
-            //contact.setContactId(contacts.size() + 1);
-            //contact.setType("Personal");
-            contact.dataCollector();
-            contact.addContact();
-            //contacts.put((contacts.size() +1), contact);
-            fName.setText("");
-            lName.setText("");
-            address.setText("");
-            phone.setText("");
-            email.setText("");
-            birth.setText("");
-            
-           
-        }
-    }
-    
-    //Main Screen
     //Add New Business Contact Button
     class BizListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -257,14 +106,9 @@ public class ContactList {
             panel2.add(save);
             panel2.revalidate();
             panel2.repaint();
-            
-            
-            
-            
         }
     }
-    
-    //Main Screen
+   
     //Add New Personal Contact Button
     class PersListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -304,7 +148,47 @@ public class ContactList {
         }
     }
     
-    //Main Screen
+    /* Save button on Add New Business Contact form
+     *  Creates new BizContact object, creates ContactId/Key
+     *  calls dataCollector() to set variables
+     *  Adds completed BizContact object to HashMap
+     *  Clears fields for next entry
+     */
+     class BizSaveListener implements ActionListener {
+         public void actionPerformed(ActionEvent e) {
+             BizContact contact = new BizContact();
+             contact.dataCollector();
+             contact.addContact();
+             fName.setText("");
+             lName.setText("");
+             address.setText("");
+             phone.setText("");
+             email.setText("");
+             title.setText("");
+             org.setText("");
+         }
+     }
+     
+     /* Save Button on Add New Personal Contact form
+     *  Creates new PersContact object, sets ContactId/Key 
+     *  calls dataCollector() to set variables
+     *  Adds completed PersContact object to HashMap 
+     *  Clears fields for next entry
+     */
+     class PersSaveListener implements ActionListener {
+         public void actionPerformed(ActionEvent e) {
+             PersContact contact = new PersContact();
+             contact.dataCollector();
+             contact.addContact();
+             fName.setText("");
+             lName.setText("");
+             address.setText("");
+             phone.setText("");
+             email.setText("");
+             birth.setText("");
+         }
+     }
+    
     // Display Contacts Button Listener
     class DisplayListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -316,7 +200,6 @@ public class ContactList {
             panel3.setLayout(new FlowLayout());
             panel2.add(panel3);
             cid = new JTextField(5);
-            //cid.addActionListener(new CidListener());
             cid.addActionListener(new DisListener());
             JButton display = new JButton("Display");
             display.addActionListener(new DisListener());
@@ -328,16 +211,69 @@ public class ContactList {
             panel2.repaint(); 
         }
     }
-    //Main Screen
+    
+  //Iterates through HashMap, getting Contacts and displaying first + last name
+    private void displayContacts() {
+    	DBAccess dba = new DBAccess();
+    	try {
+    	  dba.dbConnect();
+    	  cList = dba.listContacts();
+    	  int i = 1;
+    	  while(cList.next()) {
+    		  contacts.put(i, cList.getInt("ID"));
+    		  typeMap.put(i, cList.getString("TYPE"));
+    		  panel2.add(new JLabel(i + "    " + cList.getString("LNAME") 
+    				  + ", " + cList.getString("FNAME") + "    (" + cList.getString("TYPE") + ")"));
+    		  i++; 
+    	  }
+    	} catch (Exception e) {
+    		  System.out.println("CL.DisCon: " + e.getMessage());
+    	} finally {
+    	dba.remoteClose();
+    	}
+    }
+
+    //Listens for button click to display a contacts info
+    class DisListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+        	String c = cid.getText();
+            int cnum = Integer.parseInt(c);
+            String type = typeMap.get(cnum);
+        	DBAccess dba = new DBAccess();
+        	try {
+        		dba.dbConnect();
+        	}catch(Exception ex) {
+        		System.out.println("Connect EX: " + ex.getMessage());
+        	}
+            try {
+            	//System.out.println(typeMap.get(cnum));
+            	if(type.equals("B")) {
+            		BizContact disCont = new BizContact();
+            		//disCont.displayContact(dba.readBizContact(contacts.get(cnum)));
+            		disCont.displayContact(dba.readContact(contacts.get(cnum), type));
+            		
+            	} else if(type.equals("P")){
+            		PersContact disCont = new PersContact();
+            		//disCont.displayContact(dba.readPersContact(contacts.get(cnum)));
+            		disCont.displayContact(dba.readContact(contacts.get(cnum), type));
+            	} else {
+            		System.out.println("TypeMismatch, neither Business nor Personal");
+            	}
+            	
+            	
+            } catch (SQLException exc) {
+            	System.out.println("CL.DisList Read EX: " + exc.getMessage());
+            }
+            cid.setText("");
+        }
+    }
+    
     //Quit Button Listener
     class QuitListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
          main.dispose();
         }
     }
-    
-    
-    
 }
     
 

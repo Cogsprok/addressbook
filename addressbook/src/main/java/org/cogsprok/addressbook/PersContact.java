@@ -16,35 +16,8 @@ public class PersContact extends Contact {
 	public PersContact() {
 		this.setType("Personal");
 	}
-	
-    private String dob;
-        
-    public void setDob(String bday) {
-        dob = bday;
-    }
-    public String getDob() {
-        return dob;
-    }
-    
-    //Overrides superclass method to get DOB and set variable
-    @Override
-    public void dataCollector() {
-        super.dataCollector();
-        //this.setDob(Contact.fieldMap.get("birth"));
-        
-    }
-    
-    public void addContact()  {
-    	try {
-    		DBAccess dba = new DBAccess();
-    		dba.dbConnect();
-    		dba.addPersContact(this.getFieldMap());
-    	} catch (Exception e) {
-    		System.out.println("PaddCont: " + e.getMessage());
-    	}
-    }
-    
-    //Overrides superclass method to display DOB with contact details
+
+	//Override superclass method to display personal contact specific info
     @Override
     public void displayContact(HashMap<String, String> conDetail) {
         super.displayContact(conDetail);

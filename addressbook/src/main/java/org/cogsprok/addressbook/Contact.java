@@ -3,6 +3,7 @@ package org.cogsprok.addressbook;
 
 import java.awt.Component;
 import java.util.HashMap;
+
 import javax.swing.*;
 
 /**
@@ -11,51 +12,8 @@ import javax.swing.*;
  */
 abstract class Contact {
 	private HashMap<String, String> fieldMap = new HashMap<>();
-	private HashMap<String, String> conMap = new HashMap<>();
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String phone;
-    private String email;
-    private int contactId;
     private String type;
     
-    public void setContactId(int id) {
-        contactId = id;
-    }
-    public int getContactId() {
-        return contactId;
-    }
-    public void setFirstName(String name) {
-        firstName = name;
-    }
-    public String getFirstName() {
-        return firstName;
-    }
-    public void setLastName(String name) {
-        lastName = name;
-    }
-    public String getLastName() {
-        return lastName;
-    }
-    public void setAddress(String input) {
-        address = input;
-    }
-    public String getAddress() {
-        return address;
-    }
-    public void setPhone(String input) {
-        phone = input;
-    }
-    public String getPhone() {
-        return phone;
-    }
-    public void setEmail(String mail) {
-        email = mail;
-    }
-    public String getEmail() {
-        return email;
-    }
     public void setType(String t) {
         type = t;
     }
@@ -66,27 +24,26 @@ abstract class Contact {
     public HashMap<String, String> getFieldMap() {
     	return fieldMap;
     }
+
     
-    public String getConMapEntry(String s) {
-    	return conMap.get(s);
-    	
-    }
-    
-    //Takes text from JText fields for Add Contact, sets variables
+    //Takes text from JText fields, collects in HashMap
     public void dataCollector() {
     	for(Component c : ContactList.panel2.getComponents()) {
     		if(c instanceof JTextField) {
     			fieldMap.put(c.getName(), ((JTextField) c).getText());
     		}
     	}
-    	
-    	
-        //this.setFirstName(fields.get("fName"));
-        //this.setLastName(fields.get("lName"));
-        //this.setAddress(fields.get("address"));
-        //this.setPhone(fields.get("phone"));
-        //this.setEmail(fields.get("email"));
-       
+    }
+    
+    //Passes dataCollector hashMap to DB addContact
+    public void addContact()  {
+    	try {
+    		DBAccess dba = new DBAccess();
+    		dba.dbConnect();
+    		dba.addContact(fieldMap, type);
+    	} catch (Exception e) {
+    		System.out.println("BaddCont: " + e.getMessage());
+    	}
     }
     
     //Repaints panel2 with contact details
